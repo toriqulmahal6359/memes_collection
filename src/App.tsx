@@ -1,26 +1,34 @@
+import axios, { AxiosResponse } from 'axios';
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { ImageList } from './ImageList';
+import { Image } from './types';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export type ImageItems = Image[];
+
+const App: React.FC = (props) => {
+  const APP_URL = "http://localhost:1337/api/memes";
+  const [images, setImages] = useState<ImageItems>([]);
+    useEffect(() => {
+      axios.get(`${APP_URL}/get/images`).then((response: AxiosResponse) => {
+          console.log(response.data);
+          setImages(response.data);
+      })
+}, []);
+  return <>
+     <BrowserRouter>
+      <Switch>
+        <Route path="/">
+          <React.Fragment>
+            <ImageList items={images}/>
+          </React.Fragment>
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  </>
+   
+};
+
 
 export default App;
